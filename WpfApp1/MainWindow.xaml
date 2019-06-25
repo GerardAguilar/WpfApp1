@@ -1,46 +1,57 @@
-﻿<Window x:Class="WpfApp1.MainWindow"
+﻿<Window x:Class="WpfApp1.TouchableThing"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="900" Width="400">
-    <Border Padding="10">
-    <StackPanel>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        AllowsTransparency="True"
+        WindowStyle="None"
+        Background="Transparent"
+        Topmost="True"
+        Height="1080" Width="1920">
+    <UserControl>
+    <!--<StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width=".25*"/>
+                    <ColumnDefinition Width=".25*"/>
+                    <ColumnDefinition Width=".25*"/>
+                </Grid.ColumnDefinitions>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
+                <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>-->
+        <Border Margin="10,10,10,10" BorderBrush="Yellow" BorderThickness="10">
+                <Canvas>
+                    <Rectangle
+                        Name="TouchRectangle"
+                        Width="1920" Height="1080"
+                        Fill="Gray" Stroke="Orange" StrokeThickness="0"
+                        Opacity="0.05"
+                        />
+                </Canvas>
+        </Border>
+        <!--<Label Grid.Row="0" Grid.Column="0">Filename</Label>
+                    <Button Margin = "10 0 0 0" Grid.Row="0" Grid.Column="2">Browse</Button>
+                    <Label Grid.Row="1"/>
 
-                <Label Grid.Row="0" Grid.Column="0">Filename</Label>
-                <Button Margin = "10 0 0 0" Grid.Row="0" Grid.Column="2">Browse</Button>
-                <Label Grid.Row="1"/>
-            
-                <Label x:Name="TargetLabel" Grid.Column="0">Filename</Label>
-                <Button x:Name="TargetButton" Click="TargetButton_Click" Margin = "10 0 0 0" Grid.Row="2" Grid.Column="2">Target</Button>
-                <Label Grid.Row="3"/>
+                    <Label x:Name="TargetLabel" Grid.Column="0">Filename</Label>
+                    <Button x:Name="TargetButton" Click="TargetButton_Click" Margin = "10 0 0 0" Grid.Row="2" Grid.Column="2">Target</Button>
+                    <Label Grid.Row="3"/>
 
-                <Label Grid.Row="4" Grid.Column="0">Slot 1</Label>
-                <Button Margin = "10 0 10 0" Grid.Row="4" Grid.Column="1">Play</Button>
-                <Button Margin = "10 0 0 0" Grid.Row="4" Grid.Column="2">Record</Button>
+                    <Label Grid.Row="4" Grid.Column="0">Slot 1</Label>
+                    <Button Margin = "10 0 10 0" Grid.Row="4" Grid.Column="1">Play</Button>
+                    <Button Margin = "10 0 0 0" Grid.Row="4" Grid.Column="2">Record</Button>
 
-                <TextBlock x:Name="TestTextBlock" Text="test" Grid.Row="5" Grid.Column="0"></TextBlock>
-            
-        </Grid>
+                    <TextBlock x:Name="TestTextBlock" Text="test" Grid.Row="5" Grid.Column="0"></TextBlock>
+            </Grid>
 
-    </StackPanel>
-    </Border>
+        </StackPanel>-->
+</UserControl>
 </Window>
