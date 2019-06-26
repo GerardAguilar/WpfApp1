@@ -7,11 +7,11 @@
         AllowsTransparency="True"
         WindowStyle="None"
         Background="Gray"
-        Opacity="0.50"
+        Opacity="1"
         Topmost="True"
         Top="0"
         Left="0"
-        Height="1080" Width="1920">
+        Height="540" Width="960">
     <UserControl>
     <!--<StackPanel>
             <Grid>
