@@ -29,6 +29,9 @@ using System.Drawing;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Net;
+using System.ComponentModel;
+
+
 
 //using Microsoft.VisualStudio.TestTools.UnitTesting;
 //using OpenQA.Selenium;
@@ -46,8 +49,8 @@ namespace WpfApp1
     public partial class TouchableThing : Window
     { 
         private System.Windows.Point lastTouchDownPoint;
-        protected const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723/wd/hub";
-        private const string Paint3DAppId = @"Microsoft.MSPaint_8wekyb3d8bbwe!Microsoft.MSPaint";
+        //protected const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723/wd/hub";
+        //private const string Paint3DAppId = @"Microsoft.MSPaint_8wekyb3d8bbwe!Microsoft.MSPaint";
         public Paint3DSession instance;
 
         public TouchableThing()
@@ -55,19 +58,22 @@ namespace WpfApp1
             InitializeComponent();
             instance = new Paint3DSession();
             this.TouchDown += new EventHandler<TouchEventArgs>(TouchableThing_TouchDown);
-            this.MouseDown += new MouseButtonEventHandler(TouchableThing_MouseDown);
+            //this.MouseDown += new MouseButtonEventHandler(TouchableThing_MouseDown);
+            
         }
         
         private void TouchableThing_TouchDown(object sender, TouchEventArgs e)
         {
-            this.lastTouchDownPoint = e.GetTouchPoint(this.TouchRectangle).Position;
+            this.lastTouchDownPoint = e.GetTouchPoint(this).Position;
             Console.WriteLine("Touch: " + this.lastTouchDownPoint.ToString());
-            Tap(0, 0, e);
+            int x = int.Parse(this.lastTouchDownPoint.X.ToString());
+            int y = int.Parse(this.lastTouchDownPoint.Y.ToString());
+            Tap(x, y, e, this);
         }
 
-        private void TouchableThing_MouseDown(object sender, MouseEventArgs e) {
-            Console.WriteLine("Mouse: " + e.GetPosition(this.TouchRectangle).ToString());
-        }
+        //private void TouchableThing_MouseDown(object sender, MouseEventArgs e) {
+        //    Console.WriteLine("Mouse: " + e.GetPosition(this.TouchRectangle).ToString());
+        //}
 
         // Note: append /wd/hub to the URL if you're directing the test at Appium
         //private const string Paint3DAppId = "C:\\Paint3D";
@@ -114,21 +120,18 @@ namespace WpfApp1
         //    }
         //}
 
-        private void Tap(System.Windows.Point point, TouchEventArgs e) {
-            Tap(point.X, point.Y, e);
-        }
-
-        private void Tap(double xOffset, double yOffset, TouchEventArgs e)
+        private void Tap(int xOffset, int yOffset, TouchEventArgs e, Window w)
         {
             PointerInputDevice touch = new PointerInputDevice(PointerKind.Touch);
             ActionSequence touchSequence = new ActionSequence(touch, 0);
-            //touchSequence.AddAction(touch.CreatePointerMove(, xOffset, yOffset, TimeSpan.Zero));//need some kind of web element to reference movement
+            //touchSequence.AddAction(touch.CreatePointerMove(CoordinateOrigin.Viewport, xOffset, yOffset, TimeSpan.Zero));//need some kind of web element to reference movement
+            touchSequence.AddAction(touch.CreatePointerMove(CoordinateOrigin.Viewport, xOffset, yOffset, TimeSpan.Zero));
             touchSequence.AddAction(touch.CreatePointerDown(PointerButton.TouchContact));
             touchSequence.AddAction(touch.CreatePointerUp(PointerButton.TouchContact));
             //touchSequence.AddAction(touch.CreatePointerDown(OpenQA.Selenium.Interactions.MouseButton.Left));
             //touchSequence.AddAction(touch.CreatePointerDown(OpenQA.Selenium.Appium.Interactions.PointerButton.TouchContact));
             //instance.session.PerformActions(new List<ActionSequence> { touchSequence });
-            instance.DoActions(new List<ActionSequence> { touchSequence });
+            instance.DoActions(new List<ActionSequence> { touchSequence }, w);
         }
     }
 
@@ -167,9 +170,31 @@ namespace WpfApp1
             //session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
         }
 
-        public void DoActions(List<ActionSequence> actions) {
+        public void DoActions(List<ActionSequence> actions, Window w) {
+            Console.WriteLine("Before " + w.Background.ToString());
+            w.Background = new SolidColorBrush(Colors.Transparent) { Opacity = 0.00 };
+            Console.WriteLine("Mid " + w.Background.ToString());
             session.PerformActions(actions);
+            w.Background = new SolidColorBrush(Colors.Gray) { Opacity = 0.50 };
+            Console.WriteLine("After " + w.Background.ToString());
+            //w.
         }
+
+        //private static void setTransparent(Component w)
+        //{
+        //    WinDef.HWND hwnd = getHWnd(w);
+        //    int wl = User32.INSTANCE.GetWindowLong(hwnd, WinUser.GWL_EXSTYLE);
+        //    wl = wl | WinUser.WS_EX_LAYERED | WinUser.WS_EX_TRANSPARENT;
+        //    User32.INSTANCE.SetWindowLong(hwnd, WinUser.GWL_EXSTYLE, wl);
+        //}
+        //private static void setOpaque(Component w)
+        //{
+        //    WinDef.HWND hwnd = getHWnd(w);
+        //    int wl = originalWindowProperties;
+        //    User32.INSTANCE.SetWindowLong(hwnd, WinUser.GWL_EXSTYLE, wl);
+        //}
+
+        
     }
     
 }
