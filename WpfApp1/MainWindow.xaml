@@ -8,11 +8,10 @@
         WindowStyle="None"
         Background="Gray"
         Opacity="1"
-        Topmost="True"
         Top="0"
         Left="0"
         Height="540" Width="960">
-    <UserControl>
+    <!--<UserControl>-->
     <!--<StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -30,15 +29,15 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>-->
-        <!--<Border Margin="10,10,10,10" BorderBrush="Yellow" BorderThickness="10">
+        <Border Margin="10,10,10,10" BorderBrush="Yellow" BorderThickness="10">
                 <Canvas>
                     <Rectangle
                         Name="TouchRectangle"
-                        Width="1920" Height="1080"
-                        Fill="Gray" Stroke="Orange" StrokeThickness="0"
+                        Height="540" Width="960"
+                        Fill="White" Stroke="Orange" StrokeThickness="0"
                         />
                 </Canvas>
-        </Border>-->
+        </Border>
         <!--<Label Grid.Row="0" Grid.Column="0">Filename</Label>
                     <Button Margin = "10 0 0 0" Grid.Row="0" Grid.Column="2">Browse</Button>
                     <Label Grid.Row="1"/>
@@ -55,5 +54,5 @@
             </Grid>
 
         </StackPanel>-->
-</UserControl>
+<!--</UserControl>-->
 </Window>

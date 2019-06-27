@@ -64,10 +64,17 @@ namespace WpfApp1
         [DllImport("user32.dll")]
         static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
+        [get: System.Security.SecurityCritical]
+        public IntPtr Handle { get; }
+
         public const int GWL_EXSTYLE = -20;
         public const int WS_EX_LAYERED = 0x80000;
+        public const int WS_EX_TRANSPARENT = 32;
         public const int LWA_ALPHA = 0x2;
         public const int LWA_COLORKEY = 0x1;
+
+        private int originalStyle;
+        IntPtr myHandle;
 
         public TouchableThing()
         {
@@ -75,7 +82,10 @@ namespace WpfApp1
             instance = new Paint3DSession();
             this.TouchDown += new EventHandler<TouchEventArgs>(TouchableThing_TouchDown);
             //this.MouseDown += new MouseButtonEventHandler(TouchableThing_MouseDown);   
-            
+            //myHandle = new WindowInteropHelper(Window.GetWindow(this)).EnsureHandle();
+            myHandle = new WindowInteropHelper(Window.GetWindow(this)).Handle;
+            //Console.WriteLine("Handles: " +myHandle2.ToString() + " vs. " + myHandle.ToString());
+            originalStyle = GetWindowLong(myHandle, GWL_EXSTYLE);
         }
         
         private void TouchableThing_TouchDown(object sender, TouchEventArgs e)
@@ -95,18 +105,26 @@ namespace WpfApp1
 
         }
 
+        private void SetWindowBackground() {
+
+        }
+
         private void SetTransparent() {
-            IntPtr Handle = new WindowInteropHelper(Window.GetWindow(this)).EnsureHandle();
-            SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) ^ WS_EX_LAYERED);
-            SetLayeredWindowAttributes(Handle, 0, 0, LWA_ALPHA);
-            Console.WriteLine("SetTransparent() end");
+            //int wl = GetWindowLong(Handle, GWL_EXSTYLE);
+            //wl = wl | WS_EX_LAYERED | WS_EX_TRANSPARENT;
+            //SetWindowLong(Handle, GWL_EXSTYLE, wl);
+            SetLayeredWindowAttributes(myHandle, 0, 0, LWA_ALPHA);
+            Console.WriteLine("SetTransparent(): " + GetWindowLong(myHandle, GWL_EXSTYLE).ToString());
+
         }
 
         private void SetOpaque() {
-            IntPtr Handle = new WindowInteropHelper(Window.GetWindow(this)).EnsureHandle();
-            SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) ^ WS_EX_LAYERED);
-            SetLayeredWindowAttributes(Handle, 0, 128, LWA_ALPHA);
-            Console.WriteLine("SetOpaque() end");
+
+            //SetWindowLong(Handle, GWL_EXSTYLE, originalStyle);
+            SetLayeredWindowAttributes(myHandle, 0, 255, LWA_ALPHA);
+            //this.Opacity = 1;
+            Console.WriteLine("SetOpaque(): " + GetWindowLong(myHandle, GWL_EXSTYLE).ToString());
+            //this.Show();
         }
 
 
