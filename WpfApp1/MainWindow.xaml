@@ -6,12 +6,13 @@
         mc:Ignorable="d"        
         Top="0"
         Left="0"
-        Topmost="True"
         AllowsTransparency="True"
         WindowStyle="None"
         Background="Gray"
         Opacity="0.20"
-        Width="1920" Height="1080">
+        Width="1920" Height="1080"
+        
+        >
 
   
 
@@ -33,7 +34,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>-->
-        <Border Margin="10,10,10,10" BorderBrush="Yellow" BorderThickness="10">
+        <!--<Border Margin="10,10,10,10" BorderBrush="Yellow" BorderThickness="10">
                 <Canvas>
                     <Rectangle
                         Name="TouchRectangle"
@@ -42,7 +43,7 @@
                         
                         />
                 </Canvas>
-        </Border>
+        </Border>-->
         <!--<Label Grid.Row="0" Grid.Column="0">Filename</Label>
                     <Button Margin = "10 0 0 0" Grid.Row="0" Grid.Column="2">Browse</Button>
                     <Label Grid.Row="1"/>

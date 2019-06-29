@@ -14,8 +14,11 @@ namespace WpfApp1
     { 
         private System.Windows.Point lastTouchDownPoint;
         protected const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723/wd/hub";
-        private const string Paint3DAppId = @"Microsoft.MSPaint_8wekyb3d8bbwe!Microsoft.MSPaint";
         protected WindowsDriver<WindowsElement> session;
+        private List<TouchEventArgs> touchEventList;
+        private List<Coordinate> eventList;
+        private bool record = false;
+        private bool flip = true;
 
         #region User32 methods
         //[DllImport("user32.dll")]
@@ -100,32 +103,88 @@ namespace WpfApp1
             //session.Manage().Window.Maximize();
             InitializeComponent();
             this.TouchDown += new EventHandler<TouchEventArgs>(TouchableThing_TouchDown);
+            touchEventList = new List<TouchEventArgs>();
+            eventList = new List<Coordinate>();
+            //// Uses the Keyboard.GetKeyStates to determine if a key is down.
+            //// A bitwise AND operation is used in the comparison. 
+            //// e is an instance of KeyEventArgs.
+            //if ((Keyboard.GetKeyStates(Key.Return) & KeyStates.Down) > 0)
+            //{
+            //    Console.WriteLine("Return key is pressed");
+            //}
+
+            this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
+        }
+
+        private void OnButtonKeyDown(object sender, KeyEventArgs e)
+        {
+            Console.WriteLine(e.Key.ToString() + " held down");
+            switch (e.Key.ToString())
+            {
+                case "D1":
+                    record = !record;
+                    //Console.WriteLine("List count: " + eventList.Count);
+                    //PrintTaps(eventList);
+                    break;
+                case "D2":
+                    Console.WriteLine("List count: " + eventList.Count);
+                    RepeatTaps(eventList);
+                    break;
+                case "D3":
+                    this.Close();
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void TouchableThing_TouchDown(object sender, TouchEventArgs e)
         {
-            this.lastTouchDownPoint = e.GetTouchPoint(this).Position;            
-            this.Hide();
-            Tap(e);
-            this.Show();
+            if (flip)
+            {
+                flip = !flip;
+            }
+            else {
+                flip = !flip;
+                this.lastTouchDownPoint = e.GetTouchPoint(this).Position;
+
+                if (record)
+                {
+                    eventList.Add(
+                        new Coordinate(
+                            (int)e.GetTouchPoint(this).Position.X,
+                            (int)e.GetTouchPoint(this).Position.Y,
+                            e.Timestamp));
+                }
+
+
+                this.Hide();
+                Tap(this.lastTouchDownPoint.X, this.lastTouchDownPoint.Y);
+                this.Show();
+            }
+                        
         }
 
         private void Tap(TouchEventArgs e) {
             Console.WriteLine("Touch: " + this.lastTouchDownPoint.ToString());
+            Tap(this.lastTouchDownPoint.X, this.lastTouchDownPoint.Y);
+        }
+
+        private void Tap(double xOffset, double yOffset) {
             int x;
-            float xf;
+            double xf;
             int.TryParse(this.lastTouchDownPoint.X.ToString(), out x);
             if (x == 0)
             {
-                float.TryParse(this.lastTouchDownPoint.X.ToString(), out xf);
+                double.TryParse(this.lastTouchDownPoint.X.ToString(), out xf);
                 x = (int)xf;
             }
             int y;
-            float yf;
+            double yf;
             int.TryParse(this.lastTouchDownPoint.Y.ToString(), out y);
             if (y == 0)
             {
-                float.TryParse(this.lastTouchDownPoint.Y.ToString(), out yf);
+                double.TryParse(this.lastTouchDownPoint.Y.ToString(), out yf);
                 y = (int)yf;
             }
             Tap(x, y);
@@ -144,9 +203,141 @@ namespace WpfApp1
             session.PerformActions(actions);
             Console.WriteLine("Echo: " + actions[actions.Count - 1].ToString());
             Console.WriteLine("Tap end");
-            System.Threading.Thread.Sleep(200);            
+            //System.Threading.Thread.Sleep(200);            
+        }
+
+        private void RepeatTaps(List<Coordinate> list)
+        {
+            Console.WriteLine("RepeatTaps()");
+            //Point point;
+            int x;
+            int y;
+            int timeDiff;
+            for (int i = 0; i < list.Count; i++)
+            {
+                //point = list[i].GetTouchPoint(this).Position;
+                x = list[i].getX();
+                y = list[i].getY();
+                Tap(x,y);
+                //take into consideration the end of the list
+                if (i == (list.Count - 1))
+                {
+                    timeDiff = 0;
+                    list[i].setTimeDiff(timeDiff);
+                }
+                else {                    
+                    //take into consideration the time between the next step and the current one.
+                    //Wait for that amount of time
+                    timeDiff = list[i + 1].getTimestamp() - list[i].getTimestamp();
+                    //timeDiff = timeDiff - 200;//adjusts for transparency transitions
+                    if (timeDiff < 0)
+                    {
+                        timeDiff = 0;
+                    }
+                    list[i].setTimeDiff(timeDiff);
+                    Console.WriteLine("Waiting for : " + timeDiff + " ms");                    
+                    System.Threading.Thread.Sleep(timeDiff);
+                }                
+            }
+        }
+
+        private void PrintTaps(List<Coordinate> list) {
+            Console.WriteLine("PrintTaps()");
+            for (int i = 0; i < list.Count; i++) {
+                list[i].printCoordinate();
+            }
         }
     }
+    public class Coordinate
+    {
+        int x;
+        int y;
+        int timestamp;
+        long timeDiff;
+
+        public Coordinate(int newX, int newY)
+        {
+            setX(newX);
+            setY(newY);
+            timestamp = 0;
+            timeDiff = 0;
+        }
+
+        public Coordinate(int newX, int newY, int time)
+        {
+            setX(newX);
+            setY(newY);
+            recordTimestamp(time);
+        }
+
+        public Coordinate(int newX, int newY, int time, long diff)
+        {
+            setX(newX);
+            setY(newY);
+            recordTimestamp(time);
+            setTimeDiff(diff);
+        }
+
+        public int getX()
+        {
+            return x;
+        }
+        public void setX(int newX)
+        {
+            x = newX;
+        }
+        public int getY()
+        {
+            return y;
+        }
+        public void setY(int newY)
+        {
+            y = newY;
+        }
+        public int getTimestamp()
+        {
+            return timestamp;
+        }
+        public void recordTimestamp(int time)
+        {
+            timestamp = time;
+        }
+
+        public void printCoordinate()
+        {
+            //System.out.println("Coordinate: " + getX() + ", " + getY() + " @" + timestamp.getTime());
+            Console.WriteLine("Coordinate: " + getX() + ", " + getY() + " @" + timestamp);
+        }
+
+        /***
+         * @param other
+         * @return milliseconds
+         */
+        public long getTimeDifference(Coordinate other)
+        {
+            long diff;
+            if (other == null)
+            {
+                diff = 0;
+            }
+            else
+            {
+                diff = timestamp - other.getTimestamp();
+            }
+            return diff;
+        }
+
+        public void setTimeDiff(long diff)
+        {
+            timeDiff = diff;
+        }
+
+        public long getTimeDiff()
+        {
+            return timeDiff;
+        }
+    }
+
 }
 
 
