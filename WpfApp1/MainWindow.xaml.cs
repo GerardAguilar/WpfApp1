@@ -8,6 +8,8 @@ using PointerInputDevice = OpenQA.Selenium.Appium.Interactions.PointerInputDevic
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Appium.Interactions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace WpfApp1
 {
@@ -20,6 +22,7 @@ namespace WpfApp1
         private List<Coordinate> eventList;
         private bool record = false;
         private bool flip = false;
+        public JsonSimpleWrapper jsonSimpleWrapper;
 
         #region User32 methods
         //[DllImport("user32.dll")]
@@ -113,7 +116,7 @@ namespace WpfApp1
             //{
             //    Console.WriteLine("Return key is pressed");
             //}
-
+            jsonSimpleWrapper = new JsonSimpleWrapper();
             this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
         }
 
@@ -134,6 +137,10 @@ namespace WpfApp1
                 case "D3":
                     this.Close();
                     break;
+                case "D4":
+                    jsonSimpleWrapper.WriteEvents(eventList);
+                    jsonSimpleWrapper.SaveEvents();
+                    break;
                 default:
                     break;
             }
@@ -152,19 +159,18 @@ namespace WpfApp1
 
                 if (record)
                 {
-                    eventList.Add(
-                        new Coordinate(
+                    Coordinate newCoordinate = new Coordinate(
                             (int)e.GetTouchPoint(this).Position.X,
                             (int)e.GetTouchPoint(this).Position.Y,
-                            e.Timestamp));
-                }
+                            e.Timestamp);
 
+                    eventList.Add(newCoordinate);
+
+                }
 
                 this.Hide();
                 Tap(this.lastTouchDownPoint.X, this.lastTouchDownPoint.Y);
-                this.Show();
-            //}
-                        
+                this.Show();                       
         }
 
         private void Tap(TouchEventArgs e) {
@@ -260,6 +266,13 @@ namespace WpfApp1
         public int timestamp;
         public long timeDiff;
 
+        public Coordinate() {
+            x = 0;
+            y = 0;
+            timestamp = 0;
+            timeDiff = 0;
+        }
+
         public Coordinate(int newX, int newY)
         {
             setX(newX);
@@ -273,6 +286,7 @@ namespace WpfApp1
             setX(newX);
             setY(newY);
             recordTimestamp(time);
+            setTimeDiff(0);
         }
 
         public Coordinate(int newX, int newY, int time, long diff)
@@ -342,32 +356,41 @@ namespace WpfApp1
             return timeDiff;
         }
     }
-    public class JsonSimpleWrapper {
+    public class JsonSimpleWrapper
+    {
+        private JArray events;
 
-        public static void WriteInteractionEvents(List<Coordinate> array, int id) 
-        {
-            String filename = "InteractionEvent"+id+".json";
-            Coordinate coordinate = new Coordinate();
+        public JsonSimpleWrapper() {
+             events = new JArray();
+        }
 
-            coordinate.x = array[id].x;
-            coordinate.y = array[id].y;
-            coordinate.timestamp = array[id].timestamp;
-            coordinate.timeDiff = array[id].timeDiff;
+        public void WriteEvent(Coordinate coordinate) {
+            JObject newEvent = new JObject(
+                new JProperty("x", coordinate.x),
+                new JProperty("y", coordinate.y),
+                new JProperty("timestamp", coordinate.timestamp),
+                new JProperty("timeDiff", coordinate.timeDiff)
+                );
 
-            string output = JsonConvert.SerializeObject(coordinate);
             //{
-            //  "Name": "Apple",
-            //  "ExpiryDate": "2008-12-28T00:00:00",
-            //  "Price": 3.99,
-            //  "Sizes": [
-            //    "Small",
-            //    "Medium",
-            //    "Large"
-            //  ]
+            //  "x": "100",
+            //  "y": "100",
+            //  "timestamp": "123456789",
+            //  "timeDiff": "70"
             //}
 
-            Coordinate deserializedProduct = JsonConvert.DeserializeObject<Coordinate>(output);
+            events.Add(newEvent);
         }
+
+        public void WriteEvents(List<Coordinate> coordinates) {
+            for (int i = 0; i < coordinates.Count; i++) {
+                WriteEvent(coordinates[i]);
+            }
+        }
+
+        public void SaveEvents()
+        {
+            File.WriteAllText(@"C:\events.json", events.ToString());
+        }
+    }
 }
-
-
