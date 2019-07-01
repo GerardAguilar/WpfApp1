@@ -7,6 +7,7 @@ using OpenQA.Selenium.Appium.Windows;
 using PointerInputDevice = OpenQA.Selenium.Appium.Interactions.PointerInputDevice;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Appium.Interactions;
+using Newtonsoft.Json;
 
 namespace WpfApp1
 {
@@ -18,7 +19,7 @@ namespace WpfApp1
         private List<TouchEventArgs> touchEventList;
         private List<Coordinate> eventList;
         private bool record = false;
-        private bool flip = true;
+        private bool flip = false;
 
         #region User32 methods
         //[DllImport("user32.dll")]
@@ -140,12 +141,13 @@ namespace WpfApp1
 
         private void TouchableThing_TouchDown(object sender, TouchEventArgs e)
         {
-            if (flip)
-            {
-                flip = !flip;
-            }
-            else {
-                flip = !flip;
+            Console.WriteLine("Touch");
+            //if (flip)
+            //{
+            //    flip = !flip;
+            //}
+            //else {
+            flip = !flip;
                 this.lastTouchDownPoint = e.GetTouchPoint(this).Position;
 
                 if (record)
@@ -161,12 +163,12 @@ namespace WpfApp1
                 this.Hide();
                 Tap(this.lastTouchDownPoint.X, this.lastTouchDownPoint.Y);
                 this.Show();
-            }
+            //}
                         
         }
 
         private void Tap(TouchEventArgs e) {
-            Console.WriteLine("Touch: " + this.lastTouchDownPoint.ToString());
+            
             Tap(this.lastTouchDownPoint.X, this.lastTouchDownPoint.Y);
         }
 
@@ -187,6 +189,7 @@ namespace WpfApp1
                 double.TryParse(this.lastTouchDownPoint.Y.ToString(), out yf);
                 y = (int)yf;
             }
+            Console.WriteLine("Tap: " + x + ", " + y);
             Tap(x, y);
         }
 
@@ -208,6 +211,7 @@ namespace WpfApp1
 
         private void RepeatTaps(List<Coordinate> list)
         {
+            this.Hide();
             Console.WriteLine("RepeatTaps()");
             //Point point;
             int x;
@@ -239,6 +243,7 @@ namespace WpfApp1
                     System.Threading.Thread.Sleep(timeDiff);
                 }                
             }
+            this.Show();
         }
 
         private void PrintTaps(List<Coordinate> list) {
@@ -250,10 +255,10 @@ namespace WpfApp1
     }
     public class Coordinate
     {
-        int x;
-        int y;
-        int timestamp;
-        long timeDiff;
+        public int x;
+        public int y;
+        public int timestamp;
+        public long timeDiff;
 
         public Coordinate(int newX, int newY)
         {
@@ -337,7 +342,32 @@ namespace WpfApp1
             return timeDiff;
         }
     }
+    public class JsonSimpleWrapper {
 
+        public static void WriteInteractionEvents(List<Coordinate> array, int id) 
+        {
+            String filename = "InteractionEvent"+id+".json";
+            Coordinate coordinate = new Coordinate();
+
+            coordinate.x = array[id].x;
+            coordinate.y = array[id].y;
+            coordinate.timestamp = array[id].timestamp;
+            coordinate.timeDiff = array[id].timeDiff;
+
+            string output = JsonConvert.SerializeObject(coordinate);
+            //{
+            //  "Name": "Apple",
+            //  "ExpiryDate": "2008-12-28T00:00:00",
+            //  "Price": 3.99,
+            //  "Sizes": [
+            //    "Small",
+            //    "Medium",
+            //    "Large"
+            //  ]
+            //}
+
+            Coordinate deserializedProduct = JsonConvert.DeserializeObject<Coordinate>(output);
+        }
 }
 
 
