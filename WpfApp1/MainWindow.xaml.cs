@@ -392,5 +392,10 @@ namespace WpfApp1
         {
             File.WriteAllText(@"C:\events.json", events.ToString());
         }
+
+        //loads a single event
+        public void LoadEvent() {
+            Coordinate coordinate = JsonConvert.DeserializeObject<Coordinate>(File.ReadAllText(@"c:\events.json"));
+        }
     }
 }
