@@ -141,6 +141,9 @@ namespace WpfApp1
                     jsonSimpleWrapper.WriteEvents(eventList);
                     jsonSimpleWrapper.SaveEvents();
                     break;
+                case "D5":
+                    RepeatTaps(jsonSimpleWrapper.LoadEvent());
+                    break;
                 default:
                     break;
             }
@@ -261,10 +264,10 @@ namespace WpfApp1
     }
     public class Coordinate
     {
-        public int x;
-        public int y;
-        public int timestamp;
-        public long timeDiff;
+        public int x { get; set; }
+        public int y { get; set; }
+        public int timestamp { get; set; }
+        public long timeDiff { get; set; }
 
         public Coordinate() {
             x = 0;
@@ -394,8 +397,12 @@ namespace WpfApp1
         }
 
         //loads a single event
-        public void LoadEvent() {
-            Coordinate coordinate = JsonConvert.DeserializeObject<Coordinate>(File.ReadAllText(@"c:\events.json"));
+        public List<Coordinate> LoadEvent() {
+            List<Coordinate> result = JsonConvert.DeserializeObject<List<Coordinate>>(File.ReadAllText(@"c:\events.json"));
+            for (int i = 0; i < result.Count; i++) {
+                Console.WriteLine("x:" + result[i].x); 
+            }
+            return result;
         }
     }
 }
