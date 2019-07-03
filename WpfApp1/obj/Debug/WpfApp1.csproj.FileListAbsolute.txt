@@ -274,5 +274,10 @@ C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\obj\Debug\WpfApp1.csproj.CoreComp
 C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\obj\Debug\WpfApp1.csproj.CopyComplete
 C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\obj\Debug\WpfApp1.exe
 C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\obj\Debug\WpfApp1.pdb
-C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\obj\Debug\WpfApp1.csprojAssemblyReference.cache
 C:\Users\admin\Documents\GitHub\WpfApp1\WpfApp1\obj\Debug\WpfApp1.csprojAssemblyReference.cache
+C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\obj\Debug\WpfApp1.csprojAssemblyReference.cache
+C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\obj\Debug\WpfApp1.TrustInfo.xml
+C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\obj\Debug\WpfApp1.exe.manifest
+C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\bin\Debug\WpfApp1.exe.manifest
+C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\bin\Debug\WpfApp1.application
+C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\obj\Debug\WpfApp1.application

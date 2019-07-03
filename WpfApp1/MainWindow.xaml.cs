@@ -23,6 +23,8 @@ namespace WpfApp1
         private bool record = false;
         private bool flip = false;
         public JsonSimpleWrapper jsonSimpleWrapper;
+        public String installDirectory;
+        public const int TIMEOUT = 3600; //1 hour
 
         #region User32 methods
         //[DllImport("user32.dll")]
@@ -103,6 +105,7 @@ namespace WpfApp1
             DesiredCapabilities appCapabilities = new DesiredCapabilities();
             appCapabilities.SetCapability("app", "Root");
             appCapabilities.SetCapability("deviceName", "WindowsPC");
+            appCapabilities.SetCapability("newCommandTimeout", TIMEOUT);
             session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
             //session.Manage().Window.Maximize();
             InitializeComponent();
@@ -117,6 +120,7 @@ namespace WpfApp1
             //    Console.WriteLine("Return key is pressed");
             //}
             jsonSimpleWrapper = new JsonSimpleWrapper();
+            installDirectory = AppDomain.CurrentDomain.BaseDirectory.ToString();
             this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
         }
 
@@ -127,11 +131,15 @@ namespace WpfApp1
             {
                 case "D1":
                     record = !record;
-                    //Console.WriteLine("List count: " + eventList.Count);
-                    //PrintTaps(eventList);
+                    if (record)
+                    {
+                        Console.WriteLine("Recording ON");
+                    }
+                    else {
+                        Console.WriteLine("Recording OFF");
+                    }
                     break;
                 case "D2":
-                    Console.WriteLine("List count: " + eventList.Count);
                     RepeatTaps(eventList);
                     break;
                 case "D3":
@@ -139,10 +147,18 @@ namespace WpfApp1
                     break;
                 case "D4":
                     jsonSimpleWrapper.WriteEvents(eventList);
-                    jsonSimpleWrapper.SaveEvents();
+                    Console.WriteLine("List count: " + eventList.Count);
+                    jsonSimpleWrapper.SaveEvents(installDirectory);
                     break;
                 case "D5":
-                    RepeatTaps(jsonSimpleWrapper.LoadEvent());
+                    RepeatTaps(jsonSimpleWrapper.LoadEvent(installDirectory + "events.json"));
+                    break;
+                case "D6":
+                    Console.WriteLine("Clearing Events");
+                    eventList = new List<Coordinate>();
+                    jsonSimpleWrapper.ClearEvents();
+                    jsonSimpleWrapper.WriteEvents(eventList);
+                    jsonSimpleWrapper.SaveEvents(installDirectory);
                     break;
                 default:
                     break;
@@ -238,13 +254,15 @@ namespace WpfApp1
                     timeDiff = 0;
                     list[i].setTimeDiff(timeDiff);
                 }
-                else {                    
+                else {
                     //take into consideration the time between the next step and the current one.
                     //Wait for that amount of time
+                    Console.WriteLine(list[i + 1].getTimestamp() + " - " + list[i].getTimestamp() + " = " + (list[i + 1].getTimestamp() - list[i].getTimestamp()));
                     timeDiff = list[i + 1].getTimestamp() - list[i].getTimestamp();
                     //timeDiff = timeDiff - 200;//adjusts for transparency transitions
                     if (timeDiff < 0)
                     {
+                        Console.WriteLine("timeDiff is less than 0");
                         timeDiff = 0;
                     }
                     list[i].setTimeDiff(timeDiff);
@@ -391,18 +409,23 @@ namespace WpfApp1
             }
         }
 
-        public void SaveEvents()
+        public void SaveEvents(String installDirectory)
         {
-            File.WriteAllText(@"C:\events.json", events.ToString());
+            Console.WriteLine("Saving Events to: " + installDirectory + "events.json");
+            File.WriteAllText(installDirectory + "events.json", events.ToString());
         }
 
         //loads a single event
-        public List<Coordinate> LoadEvent() {
-            List<Coordinate> result = JsonConvert.DeserializeObject<List<Coordinate>>(File.ReadAllText(@"c:\events.json"));
-            for (int i = 0; i < result.Count; i++) {
-                Console.WriteLine("x:" + result[i].x); 
-            }
+        public List<Coordinate> LoadEvent(String targetFile) {
+            List<Coordinate> result = JsonConvert.DeserializeObject<List<Coordinate>>(File.ReadAllText(targetFile));
+            //for (int i = 0; i < result.Count; i++) {
+            //    Console.WriteLine("x:" + result[i].x); 
+            //}
             return result;
+        }
+
+        public void ClearEvents() {
+            events = new JArray();
         }
     }
 }
