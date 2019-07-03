@@ -281,3 +281,9 @@ C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\obj\Debug\WpfApp1.exe.manifest
 C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\bin\Debug\WpfApp1.exe.manifest
 C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\bin\Debug\WpfApp1.application
 C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\obj\Debug\WpfApp1.application
+C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\bin\Debug\TestApiCore.dll
+C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\bin\Debug\TestApiWpf.dll
+C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\bin\Debug\TestApiCore.pdb
+C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\bin\Debug\TestApiCore.xml
+C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\bin\Debug\TestApiWpf.pdb
+C:\Users\gaguilar\source\repos\WpfApp1\WpfApp1\bin\Debug\TestApiWpf.xml

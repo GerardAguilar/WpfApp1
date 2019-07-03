@@ -10,6 +10,8 @@ using OpenQA.Selenium.Appium.Interactions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using Microsoft.Test.VisualVerification;
+using System.Drawing.Imaging;
 
 namespace WpfApp1
 {
@@ -25,6 +27,7 @@ namespace WpfApp1
         public JsonSimpleWrapper jsonSimpleWrapper;
         public String installDirectory;
         public const int TIMEOUT = 3600; //1 hour
+        Snapshot expected;
 
         #region User32 methods
         //[DllImport("user32.dll")]
@@ -121,6 +124,7 @@ namespace WpfApp1
             //}
             jsonSimpleWrapper = new JsonSimpleWrapper();
             installDirectory = AppDomain.CurrentDomain.BaseDirectory.ToString();
+
             this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
         }
 
@@ -159,6 +163,13 @@ namespace WpfApp1
                     jsonSimpleWrapper.ClearEvents();
                     jsonSimpleWrapper.WriteEvents(eventList);
                     jsonSimpleWrapper.SaveEvents(installDirectory);
+                    break;
+                case "D7":
+                    Console.WriteLine("Screenshot");
+                    expected = ImageComparer.Screenshot(1920, 1080);
+                    break;
+                case "D8":
+                    ImageComparer.CompareImages(expected, ImageComparer.Screenshot(1920, 1080));
                     break;
                 default:
                     break;
@@ -428,4 +439,20 @@ namespace WpfApp1
             events = new JArray();
         }
     }
+    public static class ImageComparer {
+
+        public static Snapshot Screenshot(int width, int height) {
+            Snapshot snapshot = Snapshot.FromRectangle(new System.Drawing.Rectangle(0, 0, width, height));
+            snapshot.ToFile("Actual.png", ImageFormat.Png);
+            return snapshot;
+        }
+
+        public static Snapshot CompareImages(Snapshot expected, Snapshot actual) {
+            Snapshot difference = actual.CompareTo(expected);
+            difference.ToFile("Difference.png", ImageFormat.Png);
+            return difference;
+        }
+        
+    }
+
 }

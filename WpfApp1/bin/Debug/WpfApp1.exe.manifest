@@ -90,6 +90,30 @@
     </dependentAssembly>
   </dependency>
   <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TestApiCore.dll" size="306176">
+      <assemblyIdentity name="TestApiCore" version="0.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>eWpHUHptHkiKt+chCk05BpgKY8IA4f8Sxr/oPamO/yk=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TestApiWpf.dll" size="22016">
+      <assemblyIdentity name="TestApiWpf" version="0.0.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>ELXl/pJac6HhLuW9Xa0TIdQcClcqWmldtCjU5ZgRMzI=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <dependency>
     <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WebDriver.dll" size="1773568">
       <assemblyIdentity name="WebDriver" version="3.8.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
@@ -114,24 +138,24 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WpfApp1.exe" size="15360">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WpfApp1.exe" size="16384">
       <assemblyIdentity name="WpfApp1" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Pcfco53iHfh3PbjhuQ6MzVAO8ppQGY9YvLr8qKkjgxo=</dsig:DigestValue>
+        <dsig:DigestValue>KQFb3/p66IpTnEm1ms1zQ77BdkpS6CzuYVwl5iUMHUI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="WpfApp1.exe.config" size="779">
+  <file name="WpfApp1.exe.config" size="2211">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>+dUt7sPErWfSN1wZOD7oiOLswBGYLVGZnR+3mNrnEs4=</dsig:DigestValue>
+      <dsig:DigestValue>XeLUIAk5fqCOHw6c97GUOljy5CBCJED+byjE6zbYGpA=</dsig:DigestValue>
     </hash>
   </file>
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
