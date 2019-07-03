@@ -9,9 +9,8 @@
         AllowsTransparency="True"
         WindowStyle="None"
         Background="Gray"
-        Topmost="True"
         Opacity="0.20"
-        Width="3840" Height="2160"
+        Width="1920" Height="1080"
         
         >
 

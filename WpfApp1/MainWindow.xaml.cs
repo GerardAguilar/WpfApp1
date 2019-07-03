@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 using System.IO;
 using Microsoft.Test.VisualVerification;
 using System.Drawing.Imaging;
+using System.Drawing;
 
 namespace WpfApp1
 {
@@ -28,6 +29,9 @@ namespace WpfApp1
         public String installDirectory;
         public const int TIMEOUT = 3600; //1 hour
         Snapshot expected;
+        public int width = 1920;
+        public int height = 1080;
+        ImageComparer imageComparer;
 
         #region User32 methods
         //[DllImport("user32.dll")]
@@ -124,7 +128,7 @@ namespace WpfApp1
             //}
             jsonSimpleWrapper = new JsonSimpleWrapper();
             installDirectory = AppDomain.CurrentDomain.BaseDirectory.ToString();
-
+            imageComparer = new ImageComparer();
             this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
         }
 
@@ -166,10 +170,10 @@ namespace WpfApp1
                     break;
                 case "D7":
                     Console.WriteLine("Screenshot");
-                    expected = ImageComparer.Screenshot(1920, 1080);
+                    expected = imageComparer.Screenshot(width, height);
                     break;
                 case "D8":
-                    ImageComparer.CompareImages(expected, ImageComparer.Screenshot(1920, 1080));
+                    imageComparer.CompareImages(expected, imageComparer.Screenshot(width, height));
                     break;
                 default:
                     break;
@@ -185,22 +189,22 @@ namespace WpfApp1
             //}
             //else {
             flip = !flip;
-                this.lastTouchDownPoint = e.GetTouchPoint(this).Position;
+            this.lastTouchDownPoint = e.GetTouchPoint(this).Position;
 
-                if (record)
-                {
-                    Coordinate newCoordinate = new Coordinate(
-                            (int)e.GetTouchPoint(this).Position.X,
-                            (int)e.GetTouchPoint(this).Position.Y,
-                            e.Timestamp);
+            if (record)
+            {
+                Coordinate newCoordinate = new Coordinate(
+                        (int)e.GetTouchPoint(this).Position.X,
+                        (int)e.GetTouchPoint(this).Position.Y,
+                        e.Timestamp);
 
-                    eventList.Add(newCoordinate);
+                eventList.Add(newCoordinate);
 
-                }
+            }
 
-                this.Hide();
-                Tap(this.lastTouchDownPoint.X, this.lastTouchDownPoint.Y);
-                this.Show();                       
+            this.Hide();
+            Tap(this.lastTouchDownPoint.X, this.lastTouchDownPoint.Y);
+            this.Show();                       
         }
 
         private void Tap(TouchEventArgs e) {
@@ -230,8 +234,10 @@ namespace WpfApp1
         }
 
         private void Tap(int xOffset, int yOffset)
-        {
-            System.Threading.Thread.Sleep(200);
+        { 
+            //System.Threading.Thread.Sleep(100);
+            //the screenshot can take the place of sleeping instead
+
             Console.WriteLine("Tap start");
             PointerInputDevice touch = new PointerInputDevice(PointerKind.Touch);
             ActionSequence touchSequence = new ActionSequence(touch, 0);
@@ -240,10 +246,58 @@ namespace WpfApp1
             touchSequence.AddAction(touch.CreatePointerUp(PointerButton.TouchContact));
             List<ActionSequence> actions = new List<ActionSequence> { touchSequence };
             session.PerformActions(actions);
-            Console.WriteLine("Echo: " + actions[actions.Count - 1].ToString());
+
+            String filename = "Tap_" + System.DateTime.Now.ToString("yyyymmdd-HHmm-ssfff") + "_" + xOffset + "_" + yOffset + ".png";
+            Bitmap bmp = imageComparer.ScreenshotLockBits(width, height);
+            bmp.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+
+            Console.WriteLine("Echo: " + actions[actions.Count - 1].ToString());            
             Console.WriteLine("Tap end");
-            //System.Threading.Thread.Sleep(200);            
         }
+        
+        //public static Bitmap getDifferenceImage(Bitmap img1, Bitmap img2)
+        //{
+        //    int width1 = img1.Width; // Change - getWidth() and getHeight() for BufferedImage
+        //    int width2 = img2.Width; // take no arguments
+        //    int height1 = img1.Height;
+        //    int height2 = img2.Height;
+        //    if ((width1 != width2) || (height1 != height2))
+        //    {
+        //        Console.WriteLine("Incorrect image sizes");
+        //    }
+
+        //    // NEW - Create output Buffered image of type RGB
+        //    Bitmap outImg = new Bitmap(width1, height1);
+
+        //    // Modified - Changed to int as pixels are ints
+        //    int diff;
+        //    int result; // Stores output pixel
+        //    for (int i = 0; i < height1; i++)
+        //    {
+        //        for (int j = 0; j < width1; j++)
+        //        {
+        //            int rgb1 = img1.getRGB(j, i);
+        //            int rgb2 = img2.getRGB(j, i);
+        //            int r1 = (rgb1 >> 16) & 0xff;
+        //            int g1 = (rgb1 >> 8) & 0xff;
+        //            int b1 = (rgb1) & 0xff;
+        //            int r2 = (rgb2 >> 16) & 0xff;
+        //            int g2 = (rgb2 >> 8) & 0xff;
+        //            int b2 = (rgb2) & 0xff;
+        //            diff = Math.abs(r1 - r2); // Change
+        //            diff += Math.abs(g1 - g2);
+        //            diff += Math.abs(b1 - b2);
+        //            diff /= 3; // Change - Ensure result is between 0 - 255
+        //                       // Make the difference image gray scale
+        //                       // The RGB components are all the same
+        //            result = (diff << 16) | (diff << 8) | diff;
+        //            outImg.setRGB(j, i, result); // Set result
+        //        }
+        //    }
+
+        //    // Now return
+        //    return outImg;
+        //}
 
         private void RepeatTaps(List<Coordinate> list)
         {
@@ -439,15 +493,34 @@ namespace WpfApp1
             events = new JArray();
         }
     }
-    public static class ImageComparer {
+    public unsafe class ImageComparer {
 
-        public static Snapshot Screenshot(int width, int height) {
+        public void Compare(Bitmap _bmp, BitmapData _bmd) {
+            int _pixelSize = 3;
+            byte* _current = (byte*)(void*)_bmd.Scan0;
+            int _nWidth = _bmp.Width * _pixelSize;
+            int _nHeight = _bmp.Height;
+        }
+        
+        public Snapshot Screenshot(int width, int height) {
             Snapshot snapshot = Snapshot.FromRectangle(new System.Drawing.Rectangle(0, 0, width, height));
-            snapshot.ToFile("Actual.png", ImageFormat.Png);
+            //Snapshot snapshot = Snapshot.
+            //snapshot.ToFile("Actual.png", ImageFormat.Png);
+
             return snapshot;
         }
 
-        public static Snapshot CompareImages(Snapshot expected, Snapshot actual) {
+        public Bitmap ScreenshotLockBits(int width, int height) {
+            Bitmap bmp = new Bitmap(width, height);
+            Graphics gr = Graphics.FromImage(bmp);
+            gr.CopyFromScreen(0, 0, 0, 0, bmp.Size);
+            //Snapshot snapshot = Snapshot.FromBitmap(bmp);
+            Console.WriteLine("ScreenshotLockBits end");
+            return bmp;
+            //return snapshot;
+        }
+
+        public Snapshot CompareImages(Snapshot expected, Snapshot actual) {
             Snapshot difference = actual.CompareTo(expected);
             difference.ToFile("Difference.png", ImageFormat.Png);
             return difference;
