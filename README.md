@@ -19,12 +19,12 @@ How to use:
 - Press '5' to replay
 
 Keys:
-'1' - Toggle Recording On/Off
-'2' - Repeat recently recorded TouchEvents
-'3' - Quit
-'4' - Save recently recorded TouchEvents to external json file
-'5' - Replay recently recorded TouchEvents to external json file
-'6' - Clear recently recorded TouchEvents AND external json file
+* #1 - Toggle Recording On/Off
+* #2 - Repeat recently recorded TouchEvents
+* #3 - Quit
+* #4 - Save recently recorded TouchEvents to external json file
+* #5 - Replay recently recorded TouchEvents to external json file
+* #6 - Clear recently recorded TouchEvents AND external json file
 
 To Do:
 1. Implement Screen Differentials
