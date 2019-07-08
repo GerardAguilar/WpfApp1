@@ -1,0 +1,17 @@
+﻿<Window x:Class="WpfApp1.ReplayPage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="ReplayPage" Height="450" Width="800">
+    <StackPanel>
+        <ComboBox Name="JsonList" Width="200" Height="30" Margin="0,60,0,0">
+    
+        </ComboBox>
+        <Button Content="Load" Width="100" Height="30" Margin="0,20,0,0" Click="LoadFile"></Button>
+        <Button Content="Replay" Width="100" Height="30" Margin="0,20,0,0" Click="ReplayListed"></Button>
+
+    </StackPanel>
+</Window>
