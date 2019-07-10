@@ -142,9 +142,11 @@ namespace WpfApp1
                     if (record)
                     {
                         Console.WriteLine("Recording ON");
+                        this.Opacity = 0.25;
                     }
                     else {
                         Console.WriteLine("Recording OFF");
+                        this.Opacity = 0.50;
                     }
                     break;
                 case "D2":

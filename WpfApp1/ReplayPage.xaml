@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp1"
         mc:Ignorable="d"
-        Title="ReplayPage" Height="450" Width="800">
+        Title="ReplayPage" Height="450" Width="800" Top="0" Left="0">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="10"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
 
@@ -22,9 +22,9 @@
             <ColumnDefinition Width=".2*"/>
         </Grid.ColumnDefinitions>
 
-        <Button Grid.Row="1" Grid.Column="0" Content="Back" Width="Auto" Height="Auto" Margin="0,0,0,0" Click="ReturnToMainWindow"></Button>
-        <Button Grid.Row="1" Grid.Column="4" Content="Load" Width="Auto" Height="Auto" Margin="0,0,0,0" Click="LoadFile"></Button>
-        <Button Grid.Row="1" Grid.Column="3" Content="Replay" Width="Auto" Height="Auto" Margin="0,0,0,0" Click="ReplayListed"></Button>
+        <Button Grid.Row="1" Grid.Column="0" Content="BACK" Width="Auto" Height="Auto" Margin="10,10,10,10" Click="ReturnToMainWindow"></Button>
+        <Button Grid.Row="1" Grid.Column="4" Content="LOAD" Width="Auto" Height="Auto" Margin="10,10,10,10" Click="LoadFile"></Button>
+        <Button Grid.Row="1" Grid.Column="3" Content="REPLAY" Width="Auto" Height="Auto" Margin="10,10,10,10" Click="ReplayListed"></Button>
         <ListView Name="JsonList" Grid.Row="3" Grid.ColumnSpan="5" Width="Auto" Height="Auto" BorderBrush="Orange" Margin="10,10,10,10">
             
             
