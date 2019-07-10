@@ -52,7 +52,7 @@ namespace WpfApp1
         public void ToggleView(Window source) {
             parent = source;
             this.Show();
-            source.Hide();
+            parent.Hide();
         }
 
         public void LoadFile(object sender, RoutedEventArgs e) {
@@ -61,6 +61,7 @@ namespace WpfApp1
             openFileDialog.Filter = "JSON file (*.json)|*.json| All files(*.*)|*.*";
             if (openFileDialog.ShowDialog() == true) {
                 foreach (string filename in openFileDialog.FileNames) {
+                    //JsonList.Items.Add(filename);
                     JsonList.Items.Add(filename);
                     eventFilesList.Add(filename);
                 }
@@ -102,7 +103,6 @@ namespace WpfApp1
             int timeDiff;
             for (int i = 0; i < list.Count; i++)
             {
-                //point = list[i].GetTouchPoint(this).Position;
                 x = list[i].getX();
                 y = list[i].getY();
                 Tap(x, y);
@@ -118,7 +118,6 @@ namespace WpfApp1
                     //Wait for that amount of time
                     Console.WriteLine(list[i + 1].getTimestamp() + " - " + list[i].getTimestamp() + " = " + (list[i + 1].getTimestamp() - list[i].getTimestamp()));
                     timeDiff = list[i + 1].getTimestamp() - list[i].getTimestamp();
-                    //timeDiff = timeDiff - 200;//adjusts for transparency transitions
                     if (timeDiff < 0)
                     {
                         Console.WriteLine("timeDiff is less than 0");
@@ -136,6 +135,11 @@ namespace WpfApp1
             foreach (string filename in eventFilesList) {
                 RepeatTaps(jsonSimpleWrapper.LoadEvent(filename));
             }            
+        }
+
+        public void ReturnToMainWindow(object e, RoutedEventArgs args) {
+            parent.Show();
+            this.Hide();
         }
     }
 }
