@@ -14,7 +14,7 @@ using Microsoft.Test.VisualVerification;
 using System.Drawing.Imaging;
 using System.Drawing;
 
-namespace WpfApp1
+namespace TouchAuto
 {
     public partial class RecordPage : Window
     { 

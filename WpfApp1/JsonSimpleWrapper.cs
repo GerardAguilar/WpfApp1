@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfApp1
+namespace TouchAuto
 {
     public class JsonSimpleWrapper
     {
@@ -48,7 +49,11 @@ namespace WpfApp1
         public void SaveEvents(String installDirectory)
         {
             Console.WriteLine("Saving Events to: " + installDirectory + "events.json");
-            File.WriteAllText(installDirectory + "events.json", events.ToString());
+            //File.WriteAllText(installDirectory + "events.json", events.ToString());
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "JSON file (*.json)|*.json| All files(*.*)|*.*";
+            if (saveFileDialog.ShowDialog() == true)
+                File.WriteAllText(saveFileDialog.FileName, events.ToString());
         }
 
         //loads a single event

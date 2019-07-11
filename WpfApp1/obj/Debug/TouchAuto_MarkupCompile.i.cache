@@ -1,11 +1,11 @@
-﻿WpfApp1
+﻿TouchAuto
 
 
 winexe
 C#
 .cs
 C:\Users\admin\Documents\GitHub\WpfApp1\WpfApp1\obj\Debug\
-WpfApp1
+TouchAuto
 none
 false
 DEBUG;TRACE
@@ -16,5 +16,5 @@ C:\Users\admin\Documents\GitHub\WpfApp1\WpfApp1\App.xaml
 128-2103259756
 RecordPage.xaml;MainWindow.xaml;ReplayPage.xaml;
 
-True
+False
 
