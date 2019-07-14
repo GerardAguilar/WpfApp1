@@ -558,6 +558,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CustomSaveDialog.xaml.cs">
+      <DependentUpon>CustomSaveDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ImageComparer.cs" />
     <Compile Include="Coordinate.cs" />
     <Compile Include="JsonSimpleWrapper.cs" />
@@ -567,6 +570,10 @@
     <Compile Include="ReplayPage.xaml.cs">
       <DependentUpon>ReplayPage.xaml</DependentUpon>
     </Compile>
+    <Page Include="CustomSaveDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="RecordPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -114,14 +114,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TouchAuto.exe" size="25600">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TouchAuto.exe" size="29696">
       <assemblyIdentity name="TouchAuto" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>CUUtaybI8u+txclBJwM4IpCBDSzXBVIObDXeFhllufc=</dsig:DigestValue>
+        <dsig:DigestValue>7YsZo/Be0woorN17v3mV9pv6iwpqtzTSklHpG+RLSiw=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

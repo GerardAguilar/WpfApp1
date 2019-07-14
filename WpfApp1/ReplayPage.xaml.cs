@@ -64,11 +64,45 @@ namespace TouchAuto
                     //JsonList.Items.Add(filename);
                     JsonList.Items.Add(filename);
                     eventFilesList.Add(filename);
+                    PreviewImages(filename);                    
                 }
             };
             foreach (string filename in JsonList.Items) {
                 Console.WriteLine("Loaded file: " + filename);
             }
+        }
+
+        private void PreviewImages(String fileURL) {
+            System.Windows.Controls.Image im2 = new System.Windows.Controls.Image();
+            System.Windows.Controls.Image im3 = new System.Windows.Controls.Image();
+            BitmapImage bmp = new BitmapImage();
+            //String filename = eventFolder + "\\" + currentEventName + "_" + currentEventTapCount + ".png";
+            String directory = GetParentDirectory(fileURL);
+            String filename = GetFilename(fileURL);
+            Console.WriteLine("Full Path: " + directory + filename);
+            bmp.BeginInit();
+            bmp.UriSource = new Uri(directory+filename+"_0.png");
+            bmp.EndInit();
+            TransformedBitmap resizedBitmap = new TransformedBitmap(bmp, new ScaleTransform(.25, .25));
+            im2.Source = resizedBitmap;
+            im3.Source = resizedBitmap;
+            //Image1.Source = bmp;
+            ImageList.Items.Add(im2);
+            ImageList.Items.Add(im3);
+        }
+
+        private String GetParentDirectory(String fullPath) {
+            int lastBackslash = fullPath.LastIndexOf('\\');
+            String parentDirectory = fullPath.Substring(0, lastBackslash);
+            Console.WriteLine("ParentDirectory: " + parentDirectory);
+            return parentDirectory;
+        }
+        private String GetFilename(String fullPath) {
+            int lastBackslash = fullPath.LastIndexOf('\\');
+            String filename = fullPath.Substring(lastBackslash, fullPath.Length - lastBackslash - 5);//the -4 is to omit the ".json"
+            Console.WriteLine("Filename: " + filename);
+
+            return filename;
         }
 
         private void Tap(int xOffset, int yOffset)
@@ -85,9 +119,9 @@ namespace TouchAuto
             List<ActionSequence> actions = new List<ActionSequence> { touchSequence };
             session.PerformActions(actions);
 
-            String filename = "Tap_" + System.DateTime.Now.ToString("yyyymmdd-HHmm-ssfff") + "_" + xOffset + "_" + yOffset + ".png";
-            Bitmap bmp = imageComparer.ScreenshotLockBits(width, height);
-            bmp.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+            //String filename = "Tap_" + System.DateTime.Now.ToString("yyyymmdd-HHmm-ssfff") + "_" + xOffset + "_" + yOffset + ".png";
+            //Bitmap bmp = imageComparer.ScreenshotLockBits(width, height);
+            //bmp.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
 
             Console.WriteLine("Echo: " + actions[actions.Count - 1].ToString());
             Console.WriteLine("Tap end");

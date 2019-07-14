@@ -27,6 +27,8 @@ namespace TouchAuto
         private bool flip = false;
         protected JsonSimpleWrapper jsonSimpleWrapper;
         protected String installDirectory;
+        protected String currentEventName;
+        protected int currentEventTapCount;
         protected const int TIMEOUT = 3600; //1 hour
         protected Snapshot expected;
         protected int width = 1920;
@@ -123,7 +125,9 @@ namespace TouchAuto
             jsonSimpleWrapper = new JsonSimpleWrapper();
             installDirectory = AppDomain.CurrentDomain.BaseDirectory.ToString();
             imageComparer = new ImageComparer();
+            currentEventTapCount = 0;
             this.KeyDown += new KeyEventHandler(OnButtonKeyDown);
+            
         }
 
         public void ToggleView(Window source) {
@@ -138,16 +142,16 @@ namespace TouchAuto
             switch (e.Key.ToString())
             {
                 case "D1":
-                    record = !record;
-                    if (record)
-                    {
-                        Console.WriteLine("Recording ON");
-                        this.Opacity = 0.25;
-                    }
-                    else {
-                        Console.WriteLine("Recording OFF");
-                        this.Opacity = 0.50;
-                    }
+                    //record = !record;
+                    //if (record)
+                    //{
+                    //    Console.WriteLine("Recording ON");
+                    //    this.Opacity = 0.25;
+                    //}
+                    //else {
+                    //    Console.WriteLine("Recording OFF");
+                    //    this.Opacity = 0.50;
+                    //}
                     break;
                 case "D2":
                     RepeatTaps(eventList);
@@ -158,7 +162,7 @@ namespace TouchAuto
                     break;
                 case "D4":
                     jsonSimpleWrapper.WriteEvents(eventList);
-                    Console.WriteLine("List count: " + eventList.Count);
+                    Console.WriteLine("List count: " + eventList.Count);                    
                     jsonSimpleWrapper.SaveEvents(installDirectory);
                     break;
                 case "D5":
@@ -177,6 +181,37 @@ namespace TouchAuto
                     break;
                 case "D8":
                     imageComparer.CompareImages(expected, imageComparer.Screenshot(width, height));
+                    break;
+                case "D9":
+                    
+                    break;
+                case "D0":
+                    record = !record;
+                    if (record)
+                    {                       
+                        this.Hide();
+                        Console.WriteLine("Recording ON");
+                        //jsonSimpleWrapper.WriteEvents(eventList);
+                        CustomSaveDialog customSaveDialog2 = new CustomSaveDialog(this);
+                        customSaveDialog2.ShowDialog();
+                        if (customSaveDialog2.DialogResult.HasValue && customSaveDialog2.DialogResult.Value)
+                        {
+                            Console.WriteLine("Event Name: " + customSaveDialog2.eventName.Text);
+                            currentEventName = customSaveDialog2.eventName.Text;
+                            currentEventTapCount = 0;
+                        }
+                        //String eventName = customSaveDialog2.GetEventName();
+                        this.Show();
+                        this.Opacity = 0.25;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Recording OFF");
+                        jsonSimpleWrapper.WriteEvents(eventList);
+                        Console.WriteLine("List count: " + eventList.Count);
+                        jsonSimpleWrapper.SaveEvents(installDirectory, currentEventName, true);//need install directory
+                        this.Opacity = 0.75;
+                    }
                     break;
                 default:
                     break;
@@ -243,9 +278,19 @@ namespace TouchAuto
             List<ActionSequence> actions = new List<ActionSequence> { touchSequence };
             session.PerformActions(actions);
 
-            String filename = "Tap_" + DateTime.Now.ToString("yyyymmdd-HHmm-ssfff") + "_" + xOffset + "_" + yOffset + ".png";
-            Bitmap bmp = imageComparer.ScreenshotLockBits(width, height);
-            bmp.Save(filename, ImageFormat.Png);
+            if (record) {
+
+                String eventFolder = installDirectory + "\\" + currentEventName;
+                //if (!Directory.Exists(eventFolder))
+                //{
+                //    Directory.CreateDirectory(eventFolder);
+                //}
+                //String filename = eventFolder + "\\" + currentEventName + "_" + DateTime.Now.ToString("yyyymmdd-HHmm-ssfff") + "_" + xOffset + "_" + yOffset + ".png";
+                String filename = eventFolder + "\\" + currentEventName + "_" + currentEventTapCount + ".png";
+                currentEventTapCount++;
+                Bitmap bmp = imageComparer.ScreenshotLockBits(width, height);                
+                bmp.Save(filename, ImageFormat.Png);
+            }
 
             Console.WriteLine("Echo: " + actions[actions.Count - 1].ToString());            
             Console.WriteLine("Tap end");

@@ -1,0 +1,25 @@
+﻿<Window x:Class="TouchAuto.CustomSaveDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TouchAuto"
+        mc:Ignorable="d"
+        Title="CustomSaveDialog" Height="225" Width="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        
+        <TextBox Name="eventName" Grid.Row="1" Grid.ColumnSpan="2" Height="50" Width="380" FontSize="30" Margin="5,5,5,5"></TextBox>
+        <Button Name="save" Grid.Row="1" Grid.Column="2" Height="50" Width="180" Click="CustomSave" IsDefault="True">Save</Button>
+        
+    </Grid>
+</Window>
