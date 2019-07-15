@@ -18,6 +18,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.IO;
+using System.Drawing.Imaging;
+using Microsoft.Test.VisualVerification;
 
 namespace TouchAuto
 {
@@ -35,6 +38,8 @@ namespace TouchAuto
         protected int width = 1920;
         protected int height = 1080;
         protected JsonSimpleWrapper jsonSimpleWrapper;
+        protected String installDirectory;
+        protected int currentEventTapCount;
 
         public ReplayPage()
         {
@@ -46,6 +51,8 @@ namespace TouchAuto
             imageComparer = new ImageComparer();
             jsonSimpleWrapper = new JsonSimpleWrapper();
             eventFilesList = new List<String>();
+            installDirectory = AppDomain.CurrentDomain.BaseDirectory.ToString();
+            currentEventTapCount = 0;
             InitializeComponent();
         }
 
@@ -64,7 +71,7 @@ namespace TouchAuto
                     //JsonList.Items.Add(filename);
                     JsonList.Items.Add(filename);
                     eventFilesList.Add(filename);
-                    PreviewImages(filename);                    
+                                     
                 }
             };
             foreach (string filename in JsonList.Items) {
@@ -72,23 +79,42 @@ namespace TouchAuto
             }
         }
 
+        //private void PreviewImages(String fileURL) {
+        //    System.Windows.Controls.Image im2 = new System.Windows.Controls.Image();
+        //    System.Windows.Controls.Image im3 = new System.Windows.Controls.Image();
+        //    BitmapImage bmp = new BitmapImage();
+        //    //String filename = eventFolder + "\\" + currentEventName + "_" + currentEventTapCount + ".png";
+        //    String directory = GetParentDirectory(fileURL);
+        //    String filename = GetFilename(fileURL);
+        //    Console.WriteLine("Full Path: " + directory + filename);
+        //    bmp.BeginInit();
+        //    bmp.UriSource = new Uri(directory+filename+"_0.png");
+        //    bmp.EndInit();
+        //    TransformedBitmap resizedBitmap = new TransformedBitmap(bmp, new ScaleTransform(.25, .25));
+        //    im2.Source = resizedBitmap;
+        //    im3.Source = resizedBitmap;
+        //    //Image1.Source = bmp;
+        //    ImageList.Items.Add(im2);
+        //    ImageList.Items.Add(im3);
+        //}
+
         private void PreviewImages(String fileURL) {
-            System.Windows.Controls.Image im2 = new System.Windows.Controls.Image();
-            System.Windows.Controls.Image im3 = new System.Windows.Controls.Image();
-            BitmapImage bmp = new BitmapImage();
-            //String filename = eventFolder + "\\" + currentEventName + "_" + currentEventTapCount + ".png";
             String directory = GetParentDirectory(fileURL);
             String filename = GetFilename(fileURL);
-            Console.WriteLine("Full Path: " + directory + filename);
-            bmp.BeginInit();
-            bmp.UriSource = new Uri(directory+filename+"_0.png");
-            bmp.EndInit();
-            TransformedBitmap resizedBitmap = new TransformedBitmap(bmp, new ScaleTransform(.25, .25));
-            im2.Source = resizedBitmap;
-            im3.Source = resizedBitmap;
-            //Image1.Source = bmp;
-            ImageList.Items.Add(im2);
-            ImageList.Items.Add(im3);
+            int fCount = Directory.GetFiles(directory, "*", SearchOption.TopDirectoryOnly).Length;
+            for (int i = 0; i < (fCount/3)-1; i++) {//-1 to exclude the json file
+                System.Windows.Controls.Image im = new System.Windows.Controls.Image();
+                BitmapImage bmp = new BitmapImage();
+                bmp.BeginInit();
+                bmp.UriSource = new Uri(directory + filename + "_" + i + "_diff.png");
+                bmp.EndInit();
+                im.Source = new TransformedBitmap(bmp, new ScaleTransform(.25, .25));
+                ImageList.Items.Add(im);
+            }
+        }
+
+        private void PreviewImages(object e, RoutedEventArgs args) {
+            Console.WriteLine("Item was selected");
         }
 
         private String GetParentDirectory(String fullPath) {
@@ -119,15 +145,16 @@ namespace TouchAuto
             List<ActionSequence> actions = new List<ActionSequence> { touchSequence };
             session.PerformActions(actions);
 
-            //String filename = "Tap_" + System.DateTime.Now.ToString("yyyymmdd-HHmm-ssfff") + "_" + xOffset + "_" + yOffset + ".png";
-            //Bitmap bmp = imageComparer.ScreenshotLockBits(width, height);
-            //bmp.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
-
+            ////String filename = "Tap_" + System.DateTime.Now.ToString("yyyymmdd-HHmm-ssfff") + "_" + xOffset + "_" + yOffset + ".png";
+            ////Bitmap bmp = imageComparer.ScreenshotLockBits(width, height);
+            ////bmp.Save(filename, System.Drawing.Imaging.ImageFormat.Png);
+            
+            
             Console.WriteLine("Echo: " + actions[actions.Count - 1].ToString());
             Console.WriteLine("Tap end");
         }
 
-        public void RepeatTaps(List<Coordinate> list)
+        public void RepeatTaps(List<Coordinate> list, String filename)
         {
             this.Hide();
             Console.WriteLine("RepeatTaps()");
@@ -140,6 +167,22 @@ namespace TouchAuto
                 x = list[i].getX();
                 y = list[i].getY();
                 Tap(x, y);
+
+                //from filename, save current
+                String eventFolder = installDirectory + "\\" + GetFilename(filename);
+                String currentFileName = eventFolder + "\\" + GetFilename(filename) + "_" + i + "_current.png";
+                String baselineFileName = eventFolder + "\\" + GetFilename(filename) + "_" + i + ".png";
+                String diffFileName = eventFolder + "\\" + GetFilename(filename) + "_" + i + "_diff.png";
+            
+                Bitmap bmp = imageComparer.ScreenshotLockBits(width, height);
+                bmp.Save(currentFileName, ImageFormat.Png);
+
+                //from filename, get baseline
+                Snapshot expected = Snapshot.FromFile(baselineFileName);
+                imageComparer.CompareImages(expected, Snapshot.FromBitmap(bmp), diffFileName);
+
+
+
                 //take into consideration the end of the list
                 if (i == (list.Count - 1))
                 {
@@ -162,12 +205,14 @@ namespace TouchAuto
                     System.Threading.Thread.Sleep(timeDiff);
                 }
             }
+            //Generate diffs
+            PreviewImages(filename);
             this.Show();
         }
 
         public void ReplayListed(object e, RoutedEventArgs args) {
             foreach (string filename in eventFilesList) {
-                RepeatTaps(jsonSimpleWrapper.LoadEvent(filename));
+                RepeatTaps(jsonSimpleWrapper.LoadEvent(filename), filename);
             }            
         }
 

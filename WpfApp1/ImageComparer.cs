@@ -40,11 +40,11 @@ namespace TouchAuto
             //return snapshot;
         }
 
-        public Snapshot CompareImages(Snapshot expected, Snapshot actual)
+        public void CompareImages(Snapshot expected, Snapshot actual, String diffName)
         {
             Snapshot difference = actual.CompareTo(expected);
-            difference.ToFile("Difference.png", ImageFormat.Png);
-            return difference;
+            difference.ToFile(diffName, ImageFormat.Png);
+            //return difference;
         }
 
     }

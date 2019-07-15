@@ -35,11 +35,6 @@
                     <VirtualizingStackPanel IsItemsHost="True" Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
-            <!--<Image Name="Image1" Grid.Row="5" Grid.Column="0" Height="Auto" Width="Auto"></Image>
-            <Image Name="Image2" Grid.Row="5" Grid.Column="1" Height="Auto" Width="Auto"></Image>
-            <Image Name="Image3" Grid.Row="5" Grid.Column="2" Height="Auto" Width="Auto"></Image>
-            <Image Name="Image4" Grid.Row="5" Grid.Column="3" Height="Auto" Width="Auto"></Image>
-            <Image Name="Image5" Grid.Row="5" Grid.Column="4" Height="Auto" Width="Auto"></Image>-->
         </ListBox>
 
     </Grid>

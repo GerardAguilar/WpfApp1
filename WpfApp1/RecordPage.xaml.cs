@@ -177,10 +177,10 @@ namespace TouchAuto
                     break;
                 case "D7":
                     Console.WriteLine("Screenshot");
-                    expected = imageComparer.Screenshot(width, height);
+                    //expected = imageComparer.Screenshot(width, height);
                     break;
                 case "D8":
-                    imageComparer.CompareImages(expected, imageComparer.Screenshot(width, height));
+                    //imageComparer.CompareImages(expected, imageComparer.Screenshot(width, height));
                     break;
                 case "D9":
                     
@@ -281,11 +281,6 @@ namespace TouchAuto
             if (record) {
 
                 String eventFolder = installDirectory + "\\" + currentEventName;
-                //if (!Directory.Exists(eventFolder))
-                //{
-                //    Directory.CreateDirectory(eventFolder);
-                //}
-                //String filename = eventFolder + "\\" + currentEventName + "_" + DateTime.Now.ToString("yyyymmdd-HHmm-ssfff") + "_" + xOffset + "_" + yOffset + ".png";
                 String filename = eventFolder + "\\" + currentEventName + "_" + currentEventTapCount + ".png";
                 currentEventTapCount++;
                 Bitmap bmp = imageComparer.ScreenshotLockBits(width, height);                
