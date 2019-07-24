@@ -20,9 +20,9 @@ namespace TouchAuto
     /// </summary>
     public partial class CustomSaveDialog : Window
     {
-        String installDirectory;
-        Window parent;
-        String eventsString;
+        private String installDirectory;
+        private Window parent;
+        private String eventsString;
         public CustomSaveDialog(Window p) {
             parent = p;
             installDirectory = AppDomain.CurrentDomain.BaseDirectory.ToString();

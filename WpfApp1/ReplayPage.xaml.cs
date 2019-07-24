@@ -21,6 +21,7 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Drawing.Imaging;
 using Microsoft.Test.VisualVerification;
+using System.Diagnostics;
 
 namespace TouchAuto
 {
@@ -40,14 +41,15 @@ namespace TouchAuto
         protected JsonSimpleWrapper jsonSimpleWrapper;
         protected String installDirectory;
         protected int currentEventTapCount;
+        protected DesiredCapabilities appCapabilities;
 
         public ReplayPage()
         {
-            DesiredCapabilities appCapabilities = new DesiredCapabilities();
+            appCapabilities = new DesiredCapabilities();
             appCapabilities.SetCapability("app", "Root");
             appCapabilities.SetCapability("deviceName", "WindowsPC");
             appCapabilities.SetCapability("newCommandTimeout", TIMEOUT);
-            session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
+            
             imageComparer = new ImageComparer();
             jsonSimpleWrapper = new JsonSimpleWrapper();
             eventFilesList = new List<String>();
@@ -211,13 +213,17 @@ namespace TouchAuto
         }
 
         public void ReplayListed(object e, RoutedEventArgs args) {
+            Array.ForEach(Process.GetProcessesByName("WinAppDriver"), x => x.Kill());
+            session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
             foreach (string filename in eventFilesList) {
                 RepeatTaps(jsonSimpleWrapper.LoadEvent(filename), filename);
-            }            
+            }
+            session.Close();
+            Array.ForEach(Process.GetProcessesByName("WinAppDriver"), x => x.Kill());
         }
 
         public void ReturnToMainWindow(object e, RoutedEventArgs args) {
-            parent.Show();
+            parent.Show();            
             this.Hide();
         }
     }

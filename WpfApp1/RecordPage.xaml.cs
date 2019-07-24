@@ -13,18 +13,19 @@ using System.IO;
 using Microsoft.Test.VisualVerification;
 using System.Drawing.Imaging;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace TouchAuto
 {
     public partial class RecordPage : Window
     { 
-        private System.Windows.Point lastTouchDownPoint;
+        protected System.Windows.Point lastTouchDownPoint;
         protected const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723/wd/hub";
         protected WindowsDriver<WindowsElement> session;
-        private List<TouchEventArgs> touchEventList;
-        private List<Coordinate> eventList;
-        private bool record = false;
-        private bool flip = false;
+        protected List<TouchEventArgs> touchEventList;
+        protected List<Coordinate> eventList;
+        protected bool record = false;
+        protected bool flip = false;
         protected JsonSimpleWrapper jsonSimpleWrapper;
         protected String installDirectory;
         protected String currentEventName;
@@ -33,8 +34,9 @@ namespace TouchAuto
         protected Snapshot expected;
         protected int width = 1920;
         protected int height = 1080;
-        ImageComparer imageComparer;
-        Window parent;
+        protected ImageComparer imageComparer;
+        protected Window parent;
+        protected DesiredCapabilities appCapabilities;
 
         #region User32 methods
         //[DllImport("user32.dll")]
@@ -112,12 +114,13 @@ namespace TouchAuto
 
         public RecordPage()
         {
-            DesiredCapabilities appCapabilities = new DesiredCapabilities();
+            appCapabilities = new DesiredCapabilities();
             appCapabilities.SetCapability("app", "Root");
             appCapabilities.SetCapability("deviceName", "WindowsPC");
             appCapabilities.SetCapability("newCommandTimeout", TIMEOUT);
-            session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
             //session.Manage().Window.Maximize();
+            //Array.ForEach(Process.GetProcessesByName("WinAppDriver"), x => x.Kill());
+            session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
             InitializeComponent();
             this.TouchDown += new EventHandler<TouchEventArgs>(TouchableThing_TouchDown);
             touchEventList = new List<TouchEventArgs>();
@@ -188,7 +191,9 @@ namespace TouchAuto
                 case "D0":
                     record = !record;
                     if (record)
-                    {                       
+                    {
+                        Array.ForEach(Process.GetProcessesByName("WinAppDriver"), x => x.Kill());
+                        session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
                         this.Hide();
                         Console.WriteLine("Recording ON");
                         //jsonSimpleWrapper.WriteEvents(eventList);
@@ -211,6 +216,8 @@ namespace TouchAuto
                         Console.WriteLine("List count: " + eventList.Count);
                         jsonSimpleWrapper.SaveEvents(installDirectory, currentEventName, true);//need install directory
                         this.Opacity = 0.75;
+                        session.Close();
+                        Array.ForEach(Process.GetProcessesByName("WinAppDriver"), x => x.Kill());
                     }
                     break;
                 default:
@@ -282,9 +289,10 @@ namespace TouchAuto
 
                 String eventFolder = installDirectory + "\\" + currentEventName;
                 String filename = eventFolder + "\\" + currentEventName + "_" + currentEventTapCount + ".png";
-                currentEventTapCount++;
-                Bitmap bmp = imageComparer.ScreenshotLockBits(width, height);                
+                currentEventTapCount++;                
+                Bitmap bmp = imageComparer.ScreenshotLockBits(width, height);
                 bmp.Save(filename, ImageFormat.Png);
+                bmp.Dispose();//doesn't work?
             }
 
             Console.WriteLine("Echo: " + actions[actions.Count - 1].ToString());            
