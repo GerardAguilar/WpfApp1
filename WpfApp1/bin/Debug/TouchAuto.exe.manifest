@@ -66,14 +66,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll" size="98344">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll" size="98856">
       <assemblyIdentity name="Microsoft.VisualStudio.QualityTools.UnitTestFramework" version="10.0.0.0" publicKeyToken="B03F5F7F11D50A3A" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>ncHeEz45xPU2Xwmvs9BaUPMBgOi8Pdwf+wwTKuQBD+M=</dsig:DigestValue>
+        <dsig:DigestValue>tdsaWlfZBQGkdUoSIBxxJ90vey4F7ZfMsvqTyInTEpo=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -114,14 +114,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TouchAuto.exe" size="31232">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="TouchAuto.exe" size="30208">
       <assemblyIdentity name="TouchAuto" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>8/JKtUJppaljZkKQf8mzfXsxtZQSTnPHehkHbnEB3RQ=</dsig:DigestValue>
+        <dsig:DigestValue>OJbZnJlTKRaq/A61klYIXbd9DCnNMxVYws8anC1lVdI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

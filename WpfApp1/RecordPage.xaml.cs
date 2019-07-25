@@ -192,8 +192,11 @@ namespace TouchAuto
                     record = !record;
                     if (record)
                     {
-                        Array.ForEach(Process.GetProcessesByName("WinAppDriver"), x => x.Kill());
-                        session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
+                        if (session != null) {
+                            //Array.ForEach(Process.GetProcessesByName("WinAppDriver"), x => x.Kill());
+                            session.Close();
+                            session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
+                        }
                         this.Hide();
                         Console.WriteLine("Recording ON");
                         //jsonSimpleWrapper.WriteEvents(eventList);
@@ -216,8 +219,10 @@ namespace TouchAuto
                         Console.WriteLine("List count: " + eventList.Count);
                         jsonSimpleWrapper.SaveEvents(installDirectory, currentEventName, true);//need install directory
                         this.Opacity = 0.75;
-                        session.Close();
-                        Array.ForEach(Process.GetProcessesByName("WinAppDriver"), x => x.Kill());
+                        if (session != null) {
+                            session.Close();
+                            //Array.ForEach(Process.GetProcessesByName("WinAppDriver"), x => x.Kill());
+                        }
                     }
                     break;
                 default:
@@ -350,34 +355,36 @@ namespace TouchAuto
             //Point point;
             int x;
             int y;
-            int timeDiff;
+            //int timeDiff;
             for (int i = 0; i < list.Count; i++)
             {
                 //point = list[i].GetTouchPoint(this).Position;
                 x = list[i].getX();
                 y = list[i].getY();
                 Tap(x,y);
-                //take into consideration the end of the list
-                if (i == (list.Count - 1))
-                {
-                    timeDiff = 0;
-                    list[i].setTimeDiff(timeDiff);
-                }
-                else {
-                    //take into consideration the time between the next step and the current one.
-                    //Wait for that amount of time
-                    Console.WriteLine(list[i + 1].getTimestamp() + " - " + list[i].getTimestamp() + " = " + (list[i + 1].getTimestamp() - list[i].getTimestamp()));
-                    timeDiff = list[i + 1].getTimestamp() - list[i].getTimestamp();
-                    //timeDiff = timeDiff - 200;//adjusts for transparency transitions
-                    if (timeDiff < 0)
-                    {
-                        Console.WriteLine("timeDiff is less than 0");
-                        timeDiff = 0;
-                    }
-                    list[i].setTimeDiff(timeDiff);
-                    Console.WriteLine("Waiting for : " + timeDiff + " ms");                    
-                    System.Threading.Thread.Sleep(timeDiff);
-                }                
+                //TimeDiffs now taken cared of in JsonSimpleWrapper
+                ////take into consideration the end of the list
+                //if (i == (list.Count - 1))
+                //{
+                //    timeDiff = 0;
+                //    list[i].setTimeDiff(timeDiff);
+                //}
+                //else {
+                //    //take into consideration the time between the next step and the current one.
+                //    //Wait for that amount of time
+                //    Console.WriteLine(list[i + 1].getTimestamp() + " - " + list[i].getTimestamp() + " = " + (list[i + 1].getTimestamp() - list[i].getTimestamp()));
+                //    timeDiff = list[i + 1].getTimestamp() - list[i].getTimestamp();
+                //    //timeDiff = timeDiff - 200;//adjusts for transparency transitions
+                //    if (timeDiff < 0)
+                //    {
+                //        Console.WriteLine("timeDiff is less than 0");
+                //        timeDiff = 0;
+                //    }
+                //    list[i].setTimeDiff(timeDiff);
+                //    Console.WriteLine("Waiting for : " + timeDiff + " ms");                    
+                //    System.Threading.Thread.Sleep(timeDiff);
+                //}
+                System.Threading.Thread.Sleep((int)list[i].getTimeDiff());
             }
             this.Show();
         }

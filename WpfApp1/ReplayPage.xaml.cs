@@ -158,7 +158,7 @@ namespace TouchAuto
 
         public void RepeatTaps(List<Coordinate> list, String filename)
         {
-            this.Hide();
+            
             Console.WriteLine("RepeatTaps()");
             //Point point;
             int x;
@@ -183,43 +183,49 @@ namespace TouchAuto
                 Snapshot expected = Snapshot.FromFile(baselineFileName);
                 imageComparer.CompareImages(expected, Snapshot.FromBitmap(bmp), diffFileName);
 
+                //Now taken cared off in the JsonSimpleWrapper
+                ////take into consideration the end of the list
+                //if (i == (list.Count - 1))
+                //{
+                //    timeDiff = 0;
+                //    list[i].setTimeDiff(timeDiff);
+                //}
+                //else
+                //{
+                //    //take into consideration the time between the next step and the current one.
+                //    //Wait for that amount of time
+                //    Console.WriteLine(list[i + 1].getTimestamp() + " - " + list[i].getTimestamp() + " = " + (list[i + 1].getTimestamp() - list[i].getTimestamp()));
+                //    timeDiff = list[i + 1].getTimestamp() - list[i].getTimestamp();
+                //    if (timeDiff < 0)
+                //    {
+                //        Console.WriteLine("timeDiff is less than 0");
+                //        timeDiff = 0;
+                //    }
+                //    list[i].setTimeDiff(timeDiff);
+                //    Console.WriteLine("Waiting for : " + timeDiff + " ms");
+                //    System.Threading.Thread.Sleep(timeDiff);
+                //}
 
-
-                //take into consideration the end of the list
-                if (i == (list.Count - 1))
-                {
-                    timeDiff = 0;
-                    list[i].setTimeDiff(timeDiff);
-                }
-                else
-                {
-                    //take into consideration the time between the next step and the current one.
-                    //Wait for that amount of time
-                    Console.WriteLine(list[i + 1].getTimestamp() + " - " + list[i].getTimestamp() + " = " + (list[i + 1].getTimestamp() - list[i].getTimestamp()));
-                    timeDiff = list[i + 1].getTimestamp() - list[i].getTimestamp();
-                    if (timeDiff < 0)
-                    {
-                        Console.WriteLine("timeDiff is less than 0");
-                        timeDiff = 0;
-                    }
-                    list[i].setTimeDiff(timeDiff);
-                    Console.WriteLine("Waiting for : " + timeDiff + " ms");
-                    System.Threading.Thread.Sleep(timeDiff);
-                }
+                System.Threading.Thread.Sleep((int)list[i].getTimeDiff());
             }
-            //Generate diffs
-            PreviewImages(filename);
-            this.Show();
         }
 
         public void ReplayListed(object e, RoutedEventArgs args) {
-            Array.ForEach(Process.GetProcessesByName("WinAppDriver"), x => x.Kill());
+            this.Hide();
+            //Array.ForEach(Process.GetProcessesByName("WinAppDriver"), x => x.Kill());
+            if (session != null) {
+                session.Close();
+                //Array.ForEach(Process.GetProcessesByName("WinAppDriver"), x => x.Kill());
+            }
             session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
             foreach (string filename in eventFilesList) {
                 RepeatTaps(jsonSimpleWrapper.LoadEvent(filename), filename);
             }
             session.Close();
-            Array.ForEach(Process.GetProcessesByName("WinAppDriver"), x => x.Kill());
+            this.Show();
+            foreach (string filename in eventFilesList) {
+                PreviewImages(filename);
+            }            
         }
 
         public void ReturnToMainWindow(object e, RoutedEventArgs args) {

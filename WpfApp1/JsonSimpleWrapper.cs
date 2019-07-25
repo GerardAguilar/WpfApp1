@@ -25,7 +25,7 @@ namespace TouchAuto
                 new JProperty("x", coordinate.x),
                 new JProperty("y", coordinate.y),
                 new JProperty("timestamp", coordinate.timestamp),
-                new JProperty("timeDiff", coordinate.timeDiff)
+                new JProperty("timeDiff", 0)
                 );
 
             //{
@@ -38,11 +38,32 @@ namespace TouchAuto
             events.Add(newEvent);
         }
 
+        public void WriteEvent(Coordinate coordinate, Coordinate beforeCoordinate) {
+            JObject newEvent = new JObject(
+            new JProperty("x", coordinate.x),
+            new JProperty("y", coordinate.y),
+            new JProperty("timestamp", coordinate.timestamp),
+            new JProperty("timeDiff", coordinate.timestamp - beforeCoordinate.timestamp)
+            );
+
+            //{
+            //  "x": "100",
+            //  "y": "100",
+            //  "timestamp": "123456789",
+            //  "timeDiff": "2000"
+            //}
+
+            events.Add(newEvent);
+        }
+
         public void WriteEvents(List<Coordinate> coordinates)
         {
-            for (int i = 0; i < coordinates.Count; i++)
-            {
-                WriteEvent(coordinates[i]);
+            if (coordinates.Count > 0) {
+                WriteEvent(coordinates[0]);//sets the first coordinate timeDiff to zero as well
+                for (int i = 1; i < coordinates.Count; i++)
+                {
+                    WriteEvent(coordinates[i], coordinates[i - 1]);
+                }
             }
         }
 
